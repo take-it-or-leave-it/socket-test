@@ -1,0 +1,18 @@
+server:
+  port: 5001
+
+logging:
+  level:
+    root: info
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  devtools:
+    livereload:
+      enabled: true
+
+
