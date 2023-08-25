@@ -1,5 +1,9 @@
 server:
   port: 5000
+  undertow:
+    buffer-size: 10485760
+
+
 
 spring:
   devtools:

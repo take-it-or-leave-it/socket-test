@@ -17,9 +17,10 @@ import java.text.SimpleDateFormat;
 public class Receiver {
 //    private static final Logger log
 
+
     @RabbitListener(queues = "hello.queue")
     public void consume(MyMessage message){
         String current = MyMessage.dateFormat.format(System.currentTimeMillis());
-        log.info("Received Message : {}, Current Time : {}", message.toString(), current);
+        log.info("Received Time : {}, Current Time : {}", message.getTimeStamp(), current);
     }
 }
