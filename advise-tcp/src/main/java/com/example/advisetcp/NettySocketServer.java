@@ -1,12 +1,16 @@
 package com.example.advisetcp;
 
 import io.netty.bootstrap.ServerBootstrap;
+
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.SocketChannelConfig;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import java.util.concurrent.TimeUnit;
 
 @AllArgsConstructor
 public class NettySocketServer {
@@ -16,18 +20,18 @@ public class NettySocketServer {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         ServerBootstrap b = new ServerBootstrap();
-        b.group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    public void initChannel(SocketChannel ch) throws Exception {
-                        ChannelPipeline pipeline = ch.pipeline();
-                        //handler setting
-                        pipeline.addLast(new NettySocketServerHandler());
-                    }
-                })
-                .option(ChannelOption.SO_BACKLOG, 128)
-                .childOption(ChannelOption.SO_KEEPALIVE, true);
+        b.group(bossGroup, workerGroup);
+        b.channel(NioServerSocketChannel.class);
+        b.childHandler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel ch) throws Exception {
+                ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(1024*1024*10));
+                //handler setting
+                ch.pipeline().addLast(new NettySocketServerHandler());
+            }
+        });
+        b.option(ChannelOption.SO_BACKLOG, 128);
+        b.childOption(ChannelOption.SO_KEEPALIVE, true);
 
 
         try {
